@@ -1,4 +1,4 @@
-package com.kajileten.myapplication
+package com.kajileten.myapplication.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -1,4 +1,4 @@
-package com.kajileten.myapplication
+package com.kajileten.myapplication.ui.permission
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.kajileten.myapplication.R
 import com.kajileten.myapplication.databinding.FragmentPermissionBinding
 import com.kajileten.myapplication.util.ExtensionFunctions.observeOnce
 import com.kajileten.myapplication.util.Permissions
@@ -18,6 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+
+
+    private val permissionFragment : String = "PermissionFragment"
 
     private var _binding : FragmentPermissionBinding? = null
     private val binding get() = _binding!!
@@ -38,6 +42,8 @@ class PermissionFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 checkFirstLaunch()
                 return@setOnClickListener
             }
+
+            Toast.makeText(requireContext(), "Location permission is required for working the app. Please enable location from settings.", Toast.LENGTH_LONG).show()
 
             Permissions.requestLocationPermission(this)
 

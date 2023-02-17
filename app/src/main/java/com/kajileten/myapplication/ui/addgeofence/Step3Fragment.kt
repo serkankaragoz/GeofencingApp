@@ -1,10 +1,11 @@
-package com.kajileten.myapplication
+package com.kajileten.myapplication.ui.addgeofence
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.kajileten.myapplication.R
 
 
 class Step3Fragment : Fragment() {
