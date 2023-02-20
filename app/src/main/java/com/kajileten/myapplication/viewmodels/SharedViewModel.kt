@@ -1,6 +1,10 @@
 package com.kajileten.myapplication.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.location.LocationManager
+import android.os.Build
+import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -30,5 +34,18 @@ class SharedViewModel @Inject constructor(
             dataStoreRepository.saveFirstLaunch(firstLaunch)
         }
 
+    fun checkDeviceLocationServices(context: Context) : Boolean{
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            locationManager.isLocationEnabled
+        }else{
+            val mode : Int = Settings.Secure.getInt(
+                context.contentResolver,
+                Settings.Secure.LOCATION_MODE,
+                Settings.Secure.LOCATION_MODE_OFF
+            )
+            mode != Settings.Secure.LOCATION_MODE_OFF
+        }
+    }
 
 }

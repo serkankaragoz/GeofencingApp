@@ -31,6 +31,7 @@ fun TextInputEditText.onTextChanged(
     }
 }
 
+
 @BindingAdapter("nextButtonEnabled", "saveGeofenceId", requireAll = true)
 fun TextView.step1NextClicked(nextButtonEnabled : Boolean, sharedViewModel: SharedViewModel){
     this.setOnClickListener {

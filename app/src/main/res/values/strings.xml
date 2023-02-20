@@ -10,4 +10,6 @@
     <string name="name">Name</string>
     <string name="geofence">Geofence</string>
     <string name="one_three">1/3</string>
+    <string name="two_three">2/3</string>
+    <string name="location">Location</string>
 </resources>

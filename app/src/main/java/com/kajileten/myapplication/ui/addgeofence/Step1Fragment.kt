@@ -65,7 +65,6 @@ class Step1Fragment : Fragment() {
 
         getCountryCodeFromCurrentLocation()
 
-
         return binding.root
     }
 
