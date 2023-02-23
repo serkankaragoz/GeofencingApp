@@ -12,4 +12,5 @@
     <string name="one_three">1/3</string>
     <string name="two_three">2/3</string>
     <string name="location">Location</string>
+    <string name="powered_by_google">Powered by Google</string>
 </resources>

@@ -69,6 +69,9 @@ class Step2Fragment : Fragment() {
         // Inflate the layout for this fragment
 
         _binding = FragmentStep2Binding.inflate(layoutInflater, container, false)
+        binding.sharedViewModel = sharedViewModel
+        binding.step2ViewModel = step2ViewModel
+        binding.lifecycleOwner = this
 
         checkInternetConnection()
 
@@ -157,6 +160,7 @@ class Step2Fragment : Fragment() {
                         .addOnSuccessListener { response ->
                             //response.autocompletePredictions
                             predictionsAdapter.setData(response.autocompletePredictions)
+                            binding.predictionsRecyclerView.scheduleLayoutAnimation()
                         }
                         .addOnFailureListener { exception: Exception? ->
                             if (exception is ApiException) {
