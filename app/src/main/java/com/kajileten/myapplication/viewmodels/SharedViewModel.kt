@@ -9,16 +9,22 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.SphericalUtil
 import com.kajileten.myapplication.data.DataStoreRepository
+import com.kajileten.myapplication.data.GeofenceEntity
+import com.kajileten.myapplication.data.GeofenceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.sqrt
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     application : Application,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val geofenceRepository: GeofenceRepository
 ) : AndroidViewModel(application) {
 
     val app = application
@@ -32,6 +38,7 @@ class SharedViewModel @Inject constructor(
 
     var geoCitySelected = false
     var geofenceReady = false
+    var geofencePrepared = false
 
     //DataStore
     val readFirstLaunch = dataStoreRepository.readFirstLaunch.asLiveData()
@@ -41,7 +48,28 @@ class SharedViewModel @Inject constructor(
             dataStoreRepository.saveFirstLaunch(firstLaunch)
         }
 
-    fun checkDeviceLocationServices(context: Context) : Boolean{
+    // Database
+
+    val readGeofences = geofenceRepository.readGeofences.asLiveData()
+
+    fun addGeofence(geofenceEntity: GeofenceEntity) =
+        viewModelScope.launch (Dispatchers.IO){
+            geofenceRepository.addGeofence(geofenceEntity)
+        }
+
+    fun removeGeofence(geofenceEntity: GeofenceEntity) =
+        viewModelScope.launch (Dispatchers.IO){
+            geofenceRepository.removeGeofence(geofenceEntity)
+        }
+
+    fun getBounds(center: LatLng, radius: Float): LatLngBounds{
+        val distanceFromCenterToCorner = radius * sqrt(2.0)
+        val soutWestCorner = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0)
+        val northEastCorner = SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0)
+        return LatLngBounds(soutWestCorner, northEastCorner)
+    }
+
+    fun checkDeviceLocationSettings(context: Context) : Boolean{
         return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             locationManager.isLocationEnabled

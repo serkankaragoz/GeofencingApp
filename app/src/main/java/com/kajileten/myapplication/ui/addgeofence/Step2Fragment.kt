@@ -1,6 +1,5 @@
 package com.kajileten.myapplication.ui.addgeofence
 
-import android.content.pm.PackageManager.Property
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +31,6 @@ import com.kajileten.myapplication.util.ExtensionFunctions.hide
 import com.kajileten.myapplication.util.NetworkListener
 import com.kajileten.myapplication.viewmodels.SharedViewModel
 import com.kajileten.myapplication.viewmodels.Step2ViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -142,7 +140,7 @@ class Step2Fragment : Fragment() {
     }
 
     private fun getPlaces(text: CharSequence?) {
-        if (sharedViewModel.checkDeviceLocationServices(requireContext())) {
+        if (sharedViewModel.checkDeviceLocationSettings(requireContext())) {
             lifecycleScope.launch {
                 if (text.isNullOrEmpty()) {
                     predictionsAdapter.setData(emptyList())
