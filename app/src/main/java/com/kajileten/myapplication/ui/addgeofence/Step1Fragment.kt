@@ -23,6 +23,7 @@ import com.kajileten.myapplication.databinding.FragmentStep1Binding
 import com.kajileten.myapplication.viewmodels.SharedViewModel
 import com.kajileten.myapplication.viewmodels.Step1ViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.Properties
 
 
@@ -81,16 +82,22 @@ class Step1Fragment : Fragment() {
             val placeResponse = placesClient.findCurrentPlace(request)
             placeResponse.addOnCompleteListener{ task ->
                 if(task.isSuccessful){
-                    val response = task.result
-                    val latLng = response.placeLikelihoods[0].place.latLng!!
-                    val address = geoCoder.getFromLocation(
-                        latLng.latitude,
-                        latLng.longitude,
-                        1
-                    )
-                    sharedViewModel.geoCountryCode = address!![0].countryCode
-                    Log.d(step1Fragment, sharedViewModel.geoCountryCode)
-                    enableNextButton()
+                    try {
+                        val response = task.result
+                        val latLng = response.placeLikelihoods[0].place.latLng!!
+                        val address = geoCoder.getFromLocation(
+                            latLng.latitude,
+                            latLng.longitude,
+                            1
+                        )
+                        sharedViewModel.geoCountryCode = address!![0].countryCode
+                        Log.d(step1Fragment, sharedViewModel.geoCountryCode)
+                        enableNextButton()
+                    }catch (exception: IOException){
+                        Log.e(step1Fragment, "getFromLocation FAILED")
+                    }finally {
+                        enableNextButton()
+                    }
                 }else{
                     val exception = task.exception
                     if(exception is ApiException){
