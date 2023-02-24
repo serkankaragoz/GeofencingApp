@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kajileten.myapplication.R
 import com.kajileten.myapplication.databinding.FragmentMapsBinding
+import com.kajileten.myapplication.util.ExtensionFunctions.disable
+import com.kajileten.myapplication.util.ExtensionFunctions.enable
 import com.kajileten.myapplication.util.ExtensionFunctions.hide
 import com.kajileten.myapplication.util.ExtensionFunctions.show
 import com.kajileten.myapplication.util.Permissions.hasBackgroundLocationPermission
@@ -152,6 +154,10 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
     private fun setupGeofence(location: LatLng) {
         lifecycleScope.launch{
             if(sharedViewModel.checkDeviceLocationSettings(requireContext())){
+                binding.geofencesFab.disable()
+                binding.addGeofenceFab.disable()
+                binding.geofenceProgressBar.show()
+
                 drawCircle(location, sharedViewModel.geoRadius)
                 drawMarker(location, sharedViewModel.geoName)
                 zoomToGeofence(circle.center, circle.radius.toFloat())
@@ -165,6 +171,11 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
                 sharedViewModel.addGeofenceToDatabase(location)
                 delay(2000)
                 sharedViewModel.startGeofence(location.latitude, location.longitude)
+                sharedViewModel.resetSharedValues()
+
+                binding.geofencesFab.enable()
+                binding.addGeofenceFab.enable()
+                binding.geofenceProgressBar.hide()
             }else{
                 Toast.makeText(
                     requireContext(),

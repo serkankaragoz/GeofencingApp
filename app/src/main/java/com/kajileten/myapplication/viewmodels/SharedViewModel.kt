@@ -60,6 +60,20 @@ class SharedViewModel @Inject constructor(
             dataStoreRepository.saveFirstLaunch(firstLaunch)
         }
 
+    fun resetSharedValues(){
+        geoId = 0L
+        geoName = ""
+        geoCountryCode = ""
+        geoLocationName = "Search a City"
+        geoLatLng = LatLng(0.0, 0.0)
+        geoRadius = 500f
+        geoSnapshot = null
+
+        geoCitySelected = false
+        geofenceReady = false
+        geofencePrepared = false
+    }
+
     // Database
 
     val readGeofences = geofenceRepository.readGeofences.asLiveData()
@@ -109,7 +123,7 @@ class SharedViewModel @Inject constructor(
                 .setInitialTrigger(
                     GeofencingRequest.INITIAL_TRIGGER_ENTER
                             or GeofencingRequest.INITIAL_TRIGGER_DWELL
-                            or GeofencingRequest.INITIAL_TRIGGER_DWELL
+                            or GeofencingRequest.INITIAL_TRIGGER_EXIT
                 )
                 .addGeofence(geofence)
                 .build()

@@ -82,6 +82,9 @@ dependencies {
     // Spherical coordinates
     implementation 'com.google.maps.android:android-maps-utils:0.6.2'
 
+    // For ImageView operations
+    implementation("io.coil-kt:coil:2.2.2")
+
 
 }
 
