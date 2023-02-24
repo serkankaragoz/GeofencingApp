@@ -19,7 +19,7 @@ class GeofencesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val sharedViewModel : SharedViewModel by activityViewModels()
-    private val geofencesAdapter by lazy { GeofencesAdapter()}
+    private val geofencesAdapter by lazy { GeofencesAdapter(sharedViewModel)}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +27,7 @@ class GeofencesFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentGeofencesBinding.inflate(inflater, container, false)
+        binding.sharedViewModel = sharedViewModel
 
         setupToolbar()
         setupRecyclerView()
@@ -46,6 +47,7 @@ class GeofencesFragment : Fragment() {
     private fun observeDatabase() {
         sharedViewModel.readGeofences.observe(viewLifecycleOwner, {
             geofencesAdapter.setData(it)
+            binding.geofencesRecyclerView.scheduleLayoutAnimation()
         })
     }
 

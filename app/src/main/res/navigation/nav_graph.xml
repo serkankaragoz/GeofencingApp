@@ -28,13 +28,24 @@
         tools:layout="@layout/fragment_maps" >
         <action
             android:id="@+id/action_mapsFragment_to_geofencesFragment"
-            app:destination="@id/geofencesFragment" />
+            app:destination="@id/geofencesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_mapsFragment_to_add_geofence_graph"
             app:destination="@id/add_geofence_graph"
-            app:popUpTo="@id/mapsFragment"
-            app:popUpToInclusive="true"
-            />
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popEnterAnim="@anim/from_top"
+            app:popExitAnim="@anim/to_bottom"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="geofenceEntity"
+            app:argType="com.kajileten.myapplication.data.GeofenceEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <!--
     On
@@ -55,6 +66,10 @@
             <action
                 android:id="@+id/action_step1Fragment_to_step2Fragment"
                 app:destination="@id/step2Fragment"
+                app:enterAnim="@anim/from_right"
+                app:exitAnim="@anim/to_left"
+                app:popEnterAnim="@anim/from_left"
+                app:popExitAnim="@anim/to_right"
                 app:popUpTo="@id/step1Fragment"
                 app:popUpToInclusive="true" />
         </fragment>
@@ -66,11 +81,17 @@
             <action
                 android:id="@+id/action_step2Fragment_to_step3Fragment"
                 app:destination="@id/step3Fragment"
+                app:enterAnim="@anim/from_right"
+                app:exitAnim="@anim/to_left"
+                app:popEnterAnim="@anim/from_left"
+                app:popExitAnim="@anim/to_right"
                 app:popUpTo="@id/step2Fragment"
                 app:popUpToInclusive="true" />
             <action
                 android:id="@+id/action_step2Fragment_to_step1Fragment"
                 app:destination="@id/step1Fragment"
+                app:enterAnim="@anim/from_left"
+                app:exitAnim="@anim/to_right"
                 app:popUpTo="@id/step2Fragment"
                 app:popUpToInclusive="true" />
         </fragment>
@@ -82,6 +103,8 @@
             <action
                 android:id="@+id/action_step3Fragment_to_step2Fragment"
                 app:destination="@id/step2Fragment"
+                app:enterAnim="@anim/from_left"
+                app:exitAnim="@anim/to_right"
                 app:popUpTo="@id/step3Fragment"
                 app:popUpToInclusive="true" />
         </fragment>

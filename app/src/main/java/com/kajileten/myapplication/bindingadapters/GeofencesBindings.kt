@@ -1,14 +1,25 @@
 package com.kajileten.myapplication.bindingadapters
 
 import android.graphics.Bitmap
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.databinding.BindingAdapter
 import coil.load
 import com.kajileten.myapplication.R
+import com.kajileten.myapplication.data.GeofenceEntity
 import com.kajileten.myapplication.util.ExtensionFunctions.disable
 import com.kajileten.myapplication.util.ExtensionFunctions.enable
+
+@BindingAdapter("setVisibility")
+fun View.setVisibility(data: List<GeofenceEntity>){
+    if(data.isNullOrEmpty()){
+        this.visibility = View.VISIBLE
+    }else{
+        this.visibility = View.INVISIBLE
+    }
+}
 
 @BindingAdapter("handleMotionTransition")
 fun MotionLayout.handleMotionTransition(deleteImageView: ImageView){

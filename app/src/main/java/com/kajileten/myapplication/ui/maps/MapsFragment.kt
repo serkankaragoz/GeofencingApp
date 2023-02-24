@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -44,6 +45,8 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
 
     private var _binding : FragmentMapsBinding? = null
     private val binding get() = _binding!!
+
+    private val args by navArgs<MapsFragmentArgs>()
 
     private val sharedViewModel : SharedViewModel by activityViewModels()
 
@@ -92,9 +95,9 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
 
         onGeofenceReady()
         observeDatabase()
+        backFromGeofencesFragment()
 
     }
-
 
 
 
@@ -131,6 +134,17 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
                 drawMarker(LatLng(geofence.latitude, geofence.longitude), geofence.name)
             }
         })
+    }
+
+    private fun backFromGeofencesFragment() {
+        if(args.geofenceEntity != null){
+            val selectedGeofence = LatLng(
+                args.geofenceEntity!!.latitude,
+                args.geofenceEntity!!.longitude
+            )
+
+            zoomToGeofence(selectedGeofence, args.geofenceEntity!!.radius)
+        }
     }
 
     override fun onMapLongClick(location: LatLng) {

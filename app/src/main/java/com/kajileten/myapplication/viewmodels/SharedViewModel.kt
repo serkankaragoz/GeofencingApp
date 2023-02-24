@@ -25,6 +25,7 @@ import com.kajileten.myapplication.data.GeofenceEntity
 import com.kajileten.myapplication.data.GeofenceRepository
 import com.kajileten.myapplication.util.Permissions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -72,6 +73,8 @@ class SharedViewModel @Inject constructor(
         geoCitySelected = false
         geofenceReady = false
         geofencePrepared = false
+
+
     }
 
     // Database
@@ -138,6 +141,23 @@ class SharedViewModel @Inject constructor(
             }
         }else{
             Log.d("Geofence", "Permission not granted.")
+        }
+    }
+
+    suspend fun stopGeofence(geoIds: List<Long>): Boolean{
+        return  if(Permissions.hasBackgroundLocationPermission(app)){
+            val result = CompletableDeferred<Boolean>()
+            geofencingClient.removeGeofences(setPendingIntent(geoIds.first().toInt()))
+                .addOnCompleteListener {
+                    if(it.isSuccessful){
+                        result.complete(true)
+                    }else{
+                        result.complete(false)
+                    }
+                }
+            result.await()
+        }else{
+            false
         }
     }
 
