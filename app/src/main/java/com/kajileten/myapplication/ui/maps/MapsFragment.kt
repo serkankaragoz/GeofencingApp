@@ -1,6 +1,7 @@
 package com.kajileten.myapplication.ui.maps
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kajileten.myapplication.R
 import com.kajileten.myapplication.databinding.FragmentMapsBinding
@@ -36,7 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
-EasyPermissions.PermissionCallbacks{
+EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
 
     private var _binding : FragmentMapsBinding? = null
     private val binding get() = _binding!!
@@ -45,12 +47,17 @@ EasyPermissions.PermissionCallbacks{
 
     private lateinit var map : GoogleMap
     private lateinit var circle : Circle
+    private lateinit var marker : Marker
+
+    //private var hasCircle : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //hasCircle = false
+
         _binding =  FragmentMapsBinding.inflate(layoutInflater, container, false)
 
         binding.addGeofenceFab.setOnClickListener {
@@ -82,8 +89,11 @@ EasyPermissions.PermissionCallbacks{
         }
 
         onGeofenceReady()
+        observeDatabase()
 
     }
+
+
 
 
     private fun onGeofenceReady() {
@@ -104,10 +114,21 @@ EasyPermissions.PermissionCallbacks{
             binding.infoMessageTextView.hide()
         }
     }
+
     private fun zoomToSelectedLocation() {
         map.animateCamera(
             CameraUpdateFactory.newLatLngZoom(sharedViewModel.geoLatLng, 10f), 2000, null
         )
+    }
+
+    private fun observeDatabase() {
+        sharedViewModel.readGeofences.observe(viewLifecycleOwner, { geofenceEntity ->
+            map.clear()
+            geofenceEntity.forEach { geofence ->
+                drawCircle(LatLng(geofence.latitude, geofence.longitude), geofence.radius)
+                drawMarker(LatLng(geofence.latitude, geofence.longitude), geofence.name)
+            }
+        })
     }
 
     override fun onMapLongClick(location: LatLng) {
@@ -131,9 +152,19 @@ EasyPermissions.PermissionCallbacks{
     private fun setupGeofence(location: LatLng) {
         lifecycleScope.launch{
             if(sharedViewModel.checkDeviceLocationSettings(requireContext())){
-                drawCircle(location)
-                drawMarker(location)
+                drawCircle(location, sharedViewModel.geoRadius)
+                drawMarker(location, sharedViewModel.geoName)
                 zoomToGeofence(circle.center, circle.radius.toFloat())
+                //hasCircle = true
+
+                delay(1500) // 1500 ms because zoomToGeofence method requires 1000 ms
+                //lifecycleScope.launch {
+                    map.snapshot(this@MapsFragment)
+                //}
+                delay(2000)
+                sharedViewModel.addGeofenceToDatabase(location)
+                delay(2000)
+                sharedViewModel.startGeofence(location.latitude, location.longitude)
             }else{
                 Toast.makeText(
                     requireContext(),
@@ -152,21 +183,36 @@ EasyPermissions.PermissionCallbacks{
         )
     }
 
-    private fun drawCircle(location: LatLng) {
+    private fun drawCircle(location: LatLng, radius: Float) {
+
+//        if(hasCircle){
+//            circle.remove()
+//        }
+
         circle = map.addCircle(
-            CircleOptions().center(location).radius(sharedViewModel.geoRadius.toDouble())
+            CircleOptions().center(location).radius(radius.toDouble())
                 .strokeColor(ContextCompat.getColor(requireContext(), R.color.blue_700))
                 .fillColor(ContextCompat.getColor(requireContext(), R.color.blue_transparent))
         )
+
     }
 
-    private fun drawMarker(location: LatLng) {
-        map.addMarker(
-            MarkerOptions().position(location).title(sharedViewModel.geoName)
+    private fun drawMarker(location: LatLng, name: String) {
+
+//        if(hasCircle){
+//            marker.remove()
+//        }
+
+        marker = map.addMarker(
+            MarkerOptions().position(location).title(name)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        )
+        )!!
+
     }
 
+    override fun onSnapshotReady(snapshot: Bitmap?) {
+        sharedViewModel.geoSnapshot = snapshot
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

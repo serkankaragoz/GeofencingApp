@@ -10,7 +10,7 @@ class GeofenceEntity(
     val geoId: Long,
     val name: String,
     val location: String,
-    val latitude: Long,
+    val latitude: Double,
     val longitude: Double,
     val radius: Float,
     val snapshot: Bitmap
