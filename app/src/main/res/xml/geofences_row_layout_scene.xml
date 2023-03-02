@@ -16,6 +16,14 @@
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/geofence_switch"
+            motion:layout_constraintEnd_toEndOf="@+id/name_textView"
+            motion:layout_constraintBottom_toBottomOf="@+id/radius_textView"
+            motion:layout_constraintTop_toTopOf="@+id/radius_textView"
+            motion:layout_editor_absoluteY="77dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">

@@ -14,4 +14,5 @@ object Constants {
     const val NOTIFICATION_CHANNEL_NAME = "geofence_notification"
     const val NOTIFICATION_ID = 3
 
+    const val UNINITIALIZED_LONG = -1L
 }

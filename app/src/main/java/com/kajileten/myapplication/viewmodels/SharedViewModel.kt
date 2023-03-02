@@ -41,6 +41,7 @@ class SharedViewModel @Inject constructor(
     val app = application
     private var geofencingClient = LocationServices.getGeofencingClient(app.applicationContext)
 
+    private lateinit var geofence : Geofence
     var geoId: Long = 0L
     var geoName: String = "Default"
     var geoCountryCode: String = ""
@@ -73,8 +74,6 @@ class SharedViewModel @Inject constructor(
         geoCitySelected = false
         geofenceReady = false
         geofencePrepared = false
-
-
     }
 
     // Database
@@ -106,8 +105,9 @@ class SharedViewModel @Inject constructor(
         latitude: Double,
         longitude: Double
     ){
+        Log.d("SharedViewModel", "Geofences starting with ID: " + geoId.toString())
         if(Permissions.hasBackgroundLocationPermission(app)){
-            val geofence = Geofence.Builder()
+            geofence = Geofence.Builder()
                 .setRequestId(geoId.toString())
                 .setCircularRegion(
                     latitude,

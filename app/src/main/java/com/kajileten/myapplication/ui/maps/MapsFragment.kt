@@ -122,7 +122,7 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
 
     private fun zoomToSelectedLocation() {
         map.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(sharedViewModel.geoLatLng, 10f), 2000, null
+            CameraUpdateFactory.newLatLngZoom(sharedViewModel.geoLatLng, 16f), 2000, null
         )
     }
 
@@ -172,6 +172,9 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
                 binding.addGeofenceFab.disable()
                 binding.geofenceProgressBar.show()
 
+
+                map.clear()
+
                 drawCircle(location, sharedViewModel.geoRadius)
                 drawMarker(location, sharedViewModel.geoName)
                 zoomToGeofence(circle.center, circle.radius.toFloat())
@@ -190,6 +193,8 @@ EasyPermissions.PermissionCallbacks, GoogleMap.SnapshotReadyCallback{
                 binding.geofencesFab.enable()
                 binding.addGeofenceFab.enable()
                 binding.geofenceProgressBar.hide()
+
+                observeDatabase()
             }else{
                 Toast.makeText(
                     requireContext(),
